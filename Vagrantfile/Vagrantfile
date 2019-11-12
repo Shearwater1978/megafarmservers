@@ -1,0 +1,138 @@
+Vagrant.configure("2") do |config|
+
+	$domain = "my.home"
+	$k8s_name_prefix = "k8s"
+	$k8s_srv_prefix = "master"
+	$k8s_slv_prefix = "worker"
+	$elastic_name_prefix = "elastic"
+	$kibana_name_prefix = "kibana"
+	$prometheus_name_prefix = "prometheus"
+	$nfs_name_prefix = "nfs"
+	
+	# aws t2.micro instance
+	$t2_micro_mem = 1024
+	$t2_micro_cpu = 1
+	# aws t2.nano instance
+	$t2_nano_mem = 512
+	$t2_nano_cpu = 1
+	# t2.small
+	$t2_small_mem = 2048
+	$t2_small_cpu = 2
+	
+	$k8s_master_begin_ip_range = 10
+	$k8s_worker_begin_ip_range = 20
+	$elastic_stack_begin_ip_range = 30
+	$prometheus_begin_ip_range = 40
+	$kibana_begin_ip_range = 60
+	$nfs_begin_ip_range = 70
+	$private_net = "172.0.0."
+
+	$vbox_img = "generic/centos7"
+
+	#Run Kubernetes master server
+    config.vm.define "#{$k8s_name_prefix}-#{$k8s_srv_prefix}" do |master|
+	    master.vm.box = "#{$vbox_img}"
+	    master.vm.hostname = "#{$k8s_name_prefix}#{$k8s_srv_prefix}.#{$domain}"
+	    master.vm.network :private_network, ip: "#{$private_net}#{$k8s_master_begin_ip_range}"
+		master.vbguest.auto_update = false
+	    master.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		master.vm.provision "shell", path: "provision.sh"
+    end
+
+    # Run Kubernetes worker nodes
+	(1..2).each do |i|
+		config.vm.define "#{$k8s_name_prefix}-#{$k8s_slv_prefix}#{i}" do |node|
+			node.vm.box = "#{$vbox_img}"
+			node.vm.hostname = "#{$k8s_name_prefix}#{$k8s_slv_prefix}#{i}.#{$domain}"
+			node.vm.network :private_network, ip: "#{$private_net}#{$k8s_worker_begin_ip_range+i}"
+			node.vbguest.auto_update = false
+			node.vm.provider :virtualbox do |vb|
+				vb.customize [
+					"modifyvm", :id,
+					"--memory", "#{$t2_small_mem}",
+					"--cpus", "#{$t2_small_cpu}",
+					"--audio", "none",
+				]
+			end
+			node.vm.provision "shell", path: "provision.sh"
+		end
+	end
+	
+	# Run Elastic nodes
+	(1..3).each do |i|
+		config.vm.define "#{$elastic_name_prefix}-#{i}" do |elastic|
+			elastic.vm.box = "#{$vbox_img}"
+			elastic.vm.hostname = "#{$elastic_name_prefix}#{i}.#{$domain}"
+			elastic.vm.network :private_network, ip: "#{$private_net}#{$elastic_stack_begin_ip_range+i}"
+			elastic.vbguest.auto_update = false
+			elastic.vm.provider :virtualbox do |vb|
+				vb.customize [
+					"modifyvm", :id,
+					"--memory", "#{$t2_small_mem}",
+					"--cpus", "#{$t2_small_cpu}",
+					"--audio", "none",
+				]
+			end
+			elastic.vm.provision "shell", path: "provision.sh"
+			SHELL
+		end
+	end
+	
+	# Run Kibana node
+	config.vm.define "#{$kibana_name_prefix}" do |kibana|
+	    kibana.vm.box = "#{$vbox_img}"
+	    kibana.vm.hostname = "#{$kibana_name_prefix}.#{$domain}"
+	    kibana.vm.network :private_network, ip: "#{$private_net}#{$kibana_begin_ip_range}"
+		kibana.vbguest.auto_update = false
+	    kibana.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		kibana.vm.provision "shell", path: "provision.sh"
+    end
+
+	# Run Prometheus node
+	config.vm.define "#{$prometheus_name_prefix}" do |prometheus|
+	    prometheus.vm.box = "#{$vbox_img}"
+	    prometheus.vm.hostname = "#{$prometheus_name_prefix}.#{$domain}"
+	    prometheus.vm.network :private_network, ip: "#{$private_net}#{$prometheus_begin_ip_range}"
+		prometheus.vbguest.auto_update = false
+	    prometheus.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		prometheus.vm.provision "shell", path: "provision.sh"
+    end
+
+	# Run nfs node
+	config.vm.define "#{$nfs_name_prefix}" do |nfs|
+	    nfs.vm.box = "#{$vbox_img}"
+	    nfs.vm.hostname = "#{$nfs_name_prefix}.#{$domain}"
+	    nfs.vm.network :private_network, ip: "#{$private_net}#{$nfs_begin_ip_range}"
+		nfs.vbguest.auto_update = false
+	    nfs.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_nano_mem}",
+	    		"--cpus", "#{$t2_nano_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		nfs.vm.provision "shell", path: "provision.sh"
+    end	
+end
