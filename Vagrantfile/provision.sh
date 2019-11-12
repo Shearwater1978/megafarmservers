@@ -8,3 +8,4 @@ systemctl restart sshd
 echo "PS1='\[\e[1;32m\]\u@\h:\[\e[36m\]\w\[\e[33m\]\$ \[\e[m\]'" >> ~/.bashrc
 timedatectl set-timezone Europe/Samara
 echo -e '172.0.0.10 k8smaster\n172.0.0.21 k8sworker1\n172.0.0.22 k8sworker2\n172.0.0.31 elastic1\n172.0.0.32 elastic2\n172.0.0.33 elastic3\n172.0.0.60 kibana\n172.0.0.40 prometheus\n172.0.0.70 nfs\n' >>/etc/hosts
+sed -i '/^127.0.0.1/d' /etc/hosts
