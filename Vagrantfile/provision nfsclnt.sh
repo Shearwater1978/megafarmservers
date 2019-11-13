@@ -11,6 +11,6 @@ systemctl start nfs-idmap
 
 mkdir -p /media/nfs_share
 
-mount -t nfs 172.0.0.70:/home/nfs/ /media/nfs_share/
+mount -t nfs 172.0.0.35:/home/nfs/ /media/nfs_share/
 
-echo '172.0.0.70:/home/nfs/ /media/nfs_share/ nfs rw,sync,hard,intr 0 0' >> /etc/fstab
+echo '172.0.0.35:/home/nfs/ /media/nfs_share/ nfs rw,sync,hard,intr 0 0' >> /etc/fstab
