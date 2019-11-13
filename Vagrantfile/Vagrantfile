@@ -8,6 +8,8 @@ Vagrant.configure("2") do |config|
 	$kibana_name_prefix = "kibana"
 	$prometheus_name_prefix = "prometheus"
 	$nfs_name_prefix = "nfs"
+	$consul_name_prefix = "consul"
+	$grafana_name_prefix = "grafana"
 	
 	# aws t2.micro instance
 	$t2_micro_mem = 1024
@@ -20,11 +22,13 @@ Vagrant.configure("2") do |config|
 	$t2_small_cpu = 2
 	
 	$k8s_master_begin_ip_range = 10
-	$k8s_worker_begin_ip_range = 20
-	$elastic_stack_begin_ip_range = 30
-	$prometheus_begin_ip_range = 40
-	$kibana_begin_ip_range = 60
-	$nfs_begin_ip_range = 70
+	$k8s_worker_begin_ip_range = 14
+	$elastic_stack_begin_ip_range = 19
+	$prometheus_begin_ip_range = 25
+	$kibana_begin_ip_range = 30
+	$nfs_begin_ip_range = 35
+	$consul_begin_ip_range = 39
+	$grafana_begin_ip_range = 45
 	$private_net = "172.0.0."
 
 	$vbox_img = "generic/centos7"
@@ -105,6 +109,26 @@ Vagrant.configure("2") do |config|
 		end
 	end
 	
+	# Run Consul nodes
+	(1..3).each do |i|
+		config.vm.define "#{$consul_name_prefix}-#{i}" do |consul|
+			consul.vm.box = "#{$vbox_img}"
+			consul.vm.hostname = "#{$consul_name_prefix}#{i}.#{$domain}"
+			consul.vm.network :private_network, ip: "#{$private_net}#{$consul_begin_ip_range+i}"
+			consul.vbguest.auto_update = false
+			consul.vm.provider :virtualbox do |vb|
+				vb.customize [
+					"modifyvm", :id,
+					"--memory", "#{$t2_small_mem}",
+					"--cpus", "#{$t2_small_cpu}",
+					"--audio", "none",
+				]
+			end
+			consul.vm.provision "shell", path: "provision.sh"
+			consul.vm.provision "shell", path: "provision nfsclnt.sh"
+		end
+	end
+	
 	# Run Kibana node
 	config.vm.define "#{$kibana_name_prefix}" do |kibana|
 	    kibana.vm.box = "#{$vbox_img}"
@@ -139,5 +163,23 @@ Vagrant.configure("2") do |config|
 	    end
 		prometheus.vm.provision "shell", path: "provision.sh"
 		prometheus.vm.provision "shell", path: "provision nfsclnt.sh"
+    end
+	
+	# Run Grafana node
+	config.vm.define "#{$grafana_name_prefix}" do |grafana|
+	    grafana.vm.box = "#{$vbox_img}"
+	    grafana.vm.hostname = "#{$grafana_name_prefix}.#{$domain}"
+	    grafana.vm.network :private_network, ip: "#{$private_net}#{$grafana_begin_ip_range}"
+		grafana.vbguest.auto_update = false
+	    grafana.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		grafana.vm.provision "shell", path: "provision.sh"
+		grafana.vm.provision "shell", path: "provision nfsclnt.sh"
     end
 end
