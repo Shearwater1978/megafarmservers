@@ -1,0 +1,6 @@
+---
+- name: Add prometheus dir to system-wide $PATH.
+  copy:
+    dest: /etc/profile.d/prometheus-path.sh
+    content: 'export PATH="$PATH:/usr/local/bin/prometheus"'
+

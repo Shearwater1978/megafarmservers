@@ -1,0 +1,32 @@
+---
+- name: Create tmp dir for prometheus
+  tempfile:
+    state: directory
+    suffix: prometheus
+  register: tempprometheus
+
+- name: Create dir prometheus
+  file:
+    path: /usr/local/bin/prometheus
+    state: directory
+    mode: '0755'
+
+- name: Upload prometheus into server
+  copy:
+    src: prometheus.tar.gz
+    dest: "{{ tempprometheus.path }}/prometheus.tar.gz"
+
+- name: Unarchive prometheus archive
+  unarchive:
+    src: "{{ tempprometheus.path }}/prometheus.tar.gz"
+    dest: /usr/local/bin/prometheus
+    remote_src: true
+    extra_opts:
+    - --strip-components=1
+  register: out
+
+- name: Remove tmp dir
+  file:
+    state: absent
+    path: "{{ tempprometheus.path }}"
+  when: tempprometheus.path is defined

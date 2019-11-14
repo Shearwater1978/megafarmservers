@@ -1,0 +1,6 @@
+- hosts: prometheus
+  become: yes
+  gather_facts: yes
+  roles:
+    - { role: prometheus_install, tags: ['prometheusinstall','full'] }
+    - { role: prometheus_addpath, tags: ['prometheusaddpath','full'] }
