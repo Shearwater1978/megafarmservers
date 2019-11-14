@@ -1,0 +1,6 @@
+- hosts: consul
+  become: yes
+  gather_facts: yes
+  roles:
+    - { role: consul_install, tags: ['consulinstall','consul','full'] }
+    - { role: consul_run, tags: ['consulrun','consul','full'] }

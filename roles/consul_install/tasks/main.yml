@@ -1,0 +1,23 @@
+---
+- name: Create tmp dir for consul
+  tempfile:
+    state: directory
+    suffix: consul
+  register: tempconsul
+
+- name: Upload consul archive to servers
+  copy:
+    src: consul.tar
+    dest: "{{ tempconsul.path }}"
+
+- name: Unarchive consul archive
+  unarchive:
+    src: "{{ tempconsul.path }}/consul.tar"
+    dest: /usr/local/bin/
+    remote_src: true
+
+- name: Remove tmp dir
+  file:
+    state: absent
+    path: "{{ tempconsul.path }}"
+  when: tempconsul.path is defined

@@ -1,0 +1,26 @@
+---
+- name: Group consul add
+  group:
+    name: consul
+    state: present
+    system: yes
+
+- name: User consul add
+  user:
+    name: consul
+    comment: Consul is a service to discover services
+    home: /var/lib/consul
+    shell: /sbin/nologin
+    group: consul
+    system: yes
+
+- name: Create working dir for consul
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: consul
+    group: consul
+    mode: '775'
+  with_items:
+    - '/var/lib/consul/'
+    - '/etc/consul.d/'
