@@ -1,0 +1,6 @@
+---
+- name: Upload consul.service to master node
+  template:
+    src: master.test.json.j2
+    dest: /tmp/test.json
+  when: inventory_hostname == groups['consul'][0]

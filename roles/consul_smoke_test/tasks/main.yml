@@ -1,0 +1,10 @@
+---
+- name: Smoke test for consul nodes
+  shell: |
+    consul members | grep -v Node | awk '{print $1"\t status: "$3}'
+  register: smokeconsule
+  when: inventory_hostname == groups['consul'][0]
+
+- debug:
+    msg: "{{ smokeconsule.stdout_lines }}"
+  when: inventory_hostname == groups['consul'][0]

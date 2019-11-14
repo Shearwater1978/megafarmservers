@@ -1,0 +1,24 @@
+---
+- name: Upload consul.service to master node
+  template:
+    src: consul.service.j2
+    dest: /etc/systemd/system/consul.service
+
+- name: Get consul token
+  shell: consul keygen
+  register: consultoken
+  when: inventory_hostname == groups['consul'][0]
+
+- set_fact:
+    token: "{{ consultoken.stdout }}"
+  when: inventory_hostname == groups['consul'][0]
+
+- name: Upload consul.service to each node
+  template:
+    src: config.json.j2
+    dest: /etc/consul.d/config.json
+
+- name: Validate consul configuration
+  shell: consul validate /etc/consul.d/config.json
+  register: consulvalidate
+  failed_when: "'failed' in consulvalidate.stdout"

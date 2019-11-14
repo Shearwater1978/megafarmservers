@@ -1,0 +1,6 @@
+---
+- name: Run consul
+  service:
+    name: consul
+    state: started
+    enabled: yes

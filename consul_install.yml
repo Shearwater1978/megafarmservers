@@ -2,6 +2,11 @@
   become: yes
   gather_facts: yes
   roles:
+    - { role: dummy, tags: ['dummy'] }
     - { role: consul_install, tags: ['consulinstall','consul','full'] }
     - { role: consul_run, tags: ['consulrun','consul','full'] }
     - { role: consul_hosts, tags: ['consulhosts','consul','full'] }
+    - { role: consul_bootstrap, tags: ['consulbootstrap','consul','full'] }
+    - { role: consul_firewalld, tags: ['consulfirewalld','consul','full'] }
+    - { role: consul_start, tags: ['consulstart','consul','full'] }
+    - { role: consul_smoke_test, tags: ['consulsmoke','consul','full'] }
