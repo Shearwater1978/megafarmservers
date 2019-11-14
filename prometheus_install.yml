@@ -2,5 +2,8 @@
   become: yes
   gather_facts: yes
   roles:
-    - { role: prometheus_install, tags: ['prometheusinstall','full'] }
+    - { role: prometheus_upload, tags: ['prometheusupload','full'] }
     - { role: prometheus_addpath, tags: ['prometheusaddpath','full'] }
+    - { role: prometheus_run, tags: ['prometheusrun','full'] }
+    - { role: prometheus_start, tags: ['prometheusstart','full'] }
+    - { role: prometheus_firewalld, tags: ['prometheusfirewalld','full'] }

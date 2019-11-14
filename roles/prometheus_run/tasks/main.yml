@@ -1,0 +1,36 @@
+---
+- name: Group prometheus add
+  group:
+    name: prometheus
+    state: present
+
+- name: User prometheus add
+  user:
+    name: prometheus
+    comment: An open-source monitoring system
+    home: /var/lib/prometheus
+    shell: /bin/false
+    group: prometheus
+
+- name: Create working dir for prometheus
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: prometheus
+    group: prometheus
+    mode: '775'
+  with_items:
+    - '/etc/prometheus'
+    - '/var/lib/prometheus'
+
+- name: Copy prometheus.yml
+  copy:
+    remote_src: true
+    src: /usr/local/bin/prometheus/prometheus.yml
+    dest: /etc/prometheus
+
+- name: Upload prometheus.service
+  copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+

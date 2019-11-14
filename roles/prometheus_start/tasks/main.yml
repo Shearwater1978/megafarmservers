@@ -1,0 +1,6 @@
+---
+- name: Run consul
+  service:
+    name: prometheus
+    state: started
+    enabled: yes
