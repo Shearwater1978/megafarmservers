@@ -11,7 +11,7 @@ mv consul.tar roles/consul_install/files/
 
 - Prometheus
 ```bash
-export VER="0.16.0"
+export VER="2.14.0"
 wget https://github.com/prometheus/prometheus/releases/download/${VER}/prometheus-${VER}.linux-amd64.tar.gz -O roles/prometheus_upload/files/prometheus.tar.gz
 ```
 
