@@ -4,3 +4,4 @@
   roles:
     - { role: consul_install, tags: ['consulinstall','consul','full'] }
     - { role: consul_run, tags: ['consulrun','consul','full'] }
+    - { role: consul_hosts, tags: ['consulhosts','consul','full'] }
