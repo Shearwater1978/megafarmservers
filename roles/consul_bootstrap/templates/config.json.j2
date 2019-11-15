@@ -9,7 +9,7 @@
     },
     "acl_default_policy":"allow",
     "acl_down_policy":"allow",
-    "acl_master_token":"hostvars[groups['consul'][0]].uuidtoken",
+    "acl_master_token":"{{ hostvars[groups['consul'][0]].mastertoken }}",
     "data_dir": "/var/lib/consul",
     "domain": "consul",
     "enable_script_checks": true,
@@ -18,7 +18,7 @@
         "only_passing": true
     },
     "enable_syslog": true,
-    "encrypt": "{{ hostvars[groups['consul'][0]].token }}",
+    "encrypt":"{{ hostvars[groups['consul'][0]].token }}",
     "leave_on_terminate": true,
     "log_level": "INFO",
     "rejoin_after_leave": true,

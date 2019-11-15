@@ -2,9 +2,9 @@
   become: yes
   gather_facts: yes
   roles:
-    - { role: dummy, tags: ['dummy'] }
+#    - { role: dummy, tags: ['dummy'] }
     - { role: consul_install, tags: ['consulinstall','consul','full'] }
-    - { role: consul_run, tags: ['consulrun','consul','full'] }
+    - { role: consul_prepare, tags: ['consulprepare','consul','full'] }
     - { role: consul_hosts, tags: ['consulhosts','consul','full'] }
     - { role: consul_bootstrap, tags: ['consulbootstrap','consul','full'] }
     - { role: consul_firewalld, tags: ['consulfirewalld','consul','full'] }

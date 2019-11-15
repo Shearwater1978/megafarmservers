@@ -1,8 +1,15 @@
 ---
-- name: Upload consul.service to master node
-  template:
-    src: nodes-policy.hcl.j2
-    dest: /tmp/nodes-policy.hcl
+#- name: Upload consul.service to master node
+#  template:
+#    src: nodes-policy.hcl.j2
+#    dest: /tmp/nodes-policy.hcl
 
 - debug:
     msg: "{{ 999999999999999999994 | random | to_uuid }}"
+  register: uuidtoken
+
+- name: Write uuidtoken
+  copy:
+    content: "uuidtoken: {{ uuidtoken.msg }}"
+    dest: uuidtoken
+  delegate_to: localhost
