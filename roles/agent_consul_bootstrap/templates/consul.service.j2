@@ -10,9 +10,10 @@ Type=simple
 User=consul
 Group=consul
 ExecStart=/usr/local/bin/consul agent \
-	-node={{ inventory_hostname }} \
-	-config-dir=/etc/consul.d \
-        -log-file /var/lib/consul/log
+        -join {{ ext_env.consul_master }} \
+	-client {{ hostvars[inventory_hostname].ansible_host }} \
+        -advertise {{ hostvars[inventory_hostname].ansible_host }} \
+	-data-dir=/var/lib/consul /
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT

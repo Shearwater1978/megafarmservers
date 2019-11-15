@@ -1,0 +1,8 @@
+node_prefix "" {
+  policy = "read"
+}
+{% for host %}
+node "{{ }}" {
+  policy = "write"
+}
+{% endfor %}

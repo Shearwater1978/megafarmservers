@@ -1,0 +1,8 @@
+node_prefix "" {
+  policy = "read"
+}
+{% for host in groups['consul'] %}
+node "{{ hostvars[host]['inventory_hostname'] }}" {
+  policy = "write"
+}
+{% endfor %}

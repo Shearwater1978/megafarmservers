@@ -1,6 +1,8 @@
 ---
-# name: Upload consul.service to master node
-# template:
-#   src: master.test.json.j2
-#   dest: /tmp/test.json
-# when: inventory_hostname == groups['consul'][0]
+- name: Upload consul.service to master node
+  template:
+    src: nodes-policy.hcl.j2
+    dest: /tmp/nodes-policy.hcl
+
+- debug:
+    msg: "{{ 999999999999999999994 | random | to_uuid }}"

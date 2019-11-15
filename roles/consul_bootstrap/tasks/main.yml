@@ -11,6 +11,7 @@
 
 - set_fact:
     token: "{{ consultoken.stdout }}"
+    uuidtoken: "{{ 999999999999999999994 | random | to_uuid }}"
   when: inventory_hostname == groups['consul'][0]
 
 - name: Upload consul.service to each node

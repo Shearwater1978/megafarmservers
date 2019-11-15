@@ -1,0 +1,5 @@
+- hosts: consul1
+  become: yes
+  gather_facts: yes
+  roles:
+    - { role: dummy, tags: ['dummy'] }
