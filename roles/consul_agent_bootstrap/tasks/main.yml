@@ -1,18 +1,13 @@
 ---
 - name: Include var
   include_vars:
-    file: consul.env
-    name: ext_env
-
-- name: Include var
-  include_vars:
     file: uuidtoken
     name: uuidtoken_env
 
 - name: Include var
   include_vars:
-    file: consul_agent_config.yml
-    name: consul_agent_config
+    file: consul_config.env
+    name: consul_config
 
 - name: Upload consul.service to master node
   template:

@@ -1,12 +1,12 @@
 {
     "server": false,
-    "datacenter": "DC1",
-    "data_dir": "/var/lib/consul",
+    "datacenter": " {{ consul_config.consul_datacenter }}",
+    "data_dir": "{{ consul_config.consul_data_dir }}",
     "encrypt": "{{ uuidtoken_env.uuidtoken }}",
     "log_level": "INFO",
-    "enable_syslog": true,
+    "enable_syslog": false,
     "leave_on_terminate": true,
     "start_join": [
-        "{{ ext_env.consul_master }}"
+        "{{ consul_config.consul_join_ip }}"
     ]
 }
