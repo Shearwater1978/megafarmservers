@@ -19,5 +19,5 @@ wget https://github.com/prometheus/prometheus/releases/download/${VER}/prometheu
 
 Install consul:
 ```bash
-ansible-playbook -i megafarm.inventory consul_install.yml
+ansible-playbook -i megafarm.inventory consul_server_install.yml
 ```
