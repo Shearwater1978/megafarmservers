@@ -1,9 +1,0 @@
-- hosts: grafana
-  become: yes
-  gather_facts: yes
-  roles:
-    - { role: agent_consul_upload, tags: ['agentconsulupload','full'] }
-    - { role: agent_consul_install, tags: ['agentconsulinstall','full'] }
-    - { role: agent_consul_bootstrap, tags: ['agentconsulbootstrap','full'] }
-    - { role: agent_consul_firewalld, tags: ['agentconsulfirewalld','full'] }
-    - { role: agent_consul_start, tags: ['agentconsulstart','full'] }

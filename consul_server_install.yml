@@ -1,0 +1,12 @@
+- hosts: consul
+  become: yes
+  gather_facts: yes
+  roles:
+#    - { role: dummy, tags: ['dummy'] }
+    - { role: consul_server_install, tags: ['consulinstall','consul','full'] }
+    - { role: consul_server_prepare, tags: ['consulprepare','consul','full'] }
+    - { role: consul_server_hosts, tags: ['consulhosts','consul','full'] }
+    - { role: consul_server_bootstrap, tags: ['consulbootstrap','consul','full'] }
+    - { role: consul_server_firewalld, tags: ['consulfirewalld','consul','full'] }
+    - { role: consul_server_start, tags: ['consulstart','consul','full'] }
+    - { role: consul_server_smoke_test, tags: ['consulsmoke','consul','full'] }

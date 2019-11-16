@@ -1,0 +1,9 @@
+- hosts: grafana
+  become: yes
+  gather_facts: yes
+  roles:
+    - { role: consul_agent_upload, tags: ['agentconsulupload','full'] }
+    - { role: consul_agent_install, tags: ['agentconsulinstall','full'] }
+    - { role: consul_agent_bootstrap, tags: ['agentconsulbootstrap','full'] }
+    - { role: consul_agent_firewalld, tags: ['agentconsulfirewalld','full'] }
+    - { role: consul_agent_start, tags: ['agentconsulstart','full'] }
