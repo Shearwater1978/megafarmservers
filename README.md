@@ -8,6 +8,7 @@ unzip consul_${VER}_linux_amd64.zip
 tar -cvf consul.tar consul
 mkdir -p roles/consul_server_upload/files/
 mv consul.tar roles/consul_server_upload/files/
+rm -rf consul && rm -rf consul_1.6.1_linux_amd64.zip
 ```
 
 - Prometheus
