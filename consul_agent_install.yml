@@ -1,4 +1,4 @@
-- hosts: grafana
+- hosts: "{{ consultarget }}"
   become: yes
   gather_facts: yes
   roles:

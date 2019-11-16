@@ -23,4 +23,5 @@
     mode: '775'
   with_items:
     - '/var/lib/consul/'
+    - '/var/lib/consul/log'
     - '/etc/consul.d/'
