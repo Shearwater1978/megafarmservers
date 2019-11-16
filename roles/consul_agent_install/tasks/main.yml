@@ -25,3 +25,4 @@
     - '/var/lib/consul/'
     - '/var/lib/consul/log'
     - '/etc/consul.d/'
+    - '/etc/consul.d/client'

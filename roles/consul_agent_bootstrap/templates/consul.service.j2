@@ -13,8 +13,9 @@ ExecStart=/usr/local/bin/consul agent \
         -join {{ ext_env.consul_master }} \
 	-client {{ hostvars[inventory_hostname].ansible_host }} \
         -advertise {{ hostvars[inventory_hostname].ansible_host }} \
-        -log-file=/var/lib/consul/log/consul.log \
-        -data-dir=/var/lib/consul
+        -log-file={{ consul_agent_config.consul_log_dir }} \
+        -data-dir={{ consul_agent_config.consul_data_dir }} \
+        -config-dir {{ consul_agent_config.consul_config_dir }}
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT

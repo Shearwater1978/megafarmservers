@@ -9,7 +9,15 @@
     file: uuidtoken
     name: uuidtoken_env
 
+- name: Include var
+  include_vars:
+    file: consul_agent_config.yml
+    name: consul_agent_config
+
 - name: Upload consul.service to master node
   template:
-    src: consul.service.j2
-    dest: /etc/systemd/system/consul.service
+    src: "{{ item.name }}"
+    dest: "{{ item.tgt }}"
+  with_items:
+    - { name: 'consul.service.j2', tgt: '/etc/systemd/system/consul.service' }
+    - { name: 'config.json.j2', tgt: '/etc/consul.d/client/config.json' }
