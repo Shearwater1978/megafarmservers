@@ -1,0 +1,10 @@
+{"service":
+  {"name": "grafana",
+    "tags": ["monitoring"],
+    "port": {{ grafana_config.grafana_port }},
+    "check": {
+      "args": ["{{ consul_agent_config.consul_config_dir }}/scripts/grafana_check.sh"],
+      "interval": "30s"
+    }
+  }
+}

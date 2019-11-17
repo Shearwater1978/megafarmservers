@@ -1,0 +1,25 @@
+---
+- name: Include var
+  include_vars:
+    file: grafana_config.env
+    name: grafana_config
+
+- name: Include var
+  include_vars:
+    file: consul_agent_config.env
+    name: consul_agent_config
+
+- name: Upload ini file to server
+  template:
+    src: "{{ item.name }}"
+    dest: "{{ item.tgt }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+  with_items:
+    - { name: 'grafana_check.sh.j2', tgt: '{{ consul_agent_config.consul_config_dir }}/scripts/grafana_check.sh', mode: 'u=rwx,g=,o=', owner: 'consul' }
+    - { name: 'grafana.json', tgt: '{{ consul_agent_config.consul_config_dir}}/', mode: 'u=r,o=r,g=r', owner: 'consul' }
+
+- name: Reload consul service
+  service:
+    name: consul
+    state: restarted

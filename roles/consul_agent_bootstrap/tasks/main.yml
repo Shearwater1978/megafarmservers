@@ -6,8 +6,8 @@
 
 - name: Include var
   include_vars:
-    file: consul_config.env
-    name: consul_config
+    file: consul_agent_config.env
+    name: consul_agent_config
 
 - name: Upload consul.service to master node
   template:

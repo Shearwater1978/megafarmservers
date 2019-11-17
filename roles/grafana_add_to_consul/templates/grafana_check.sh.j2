@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl -s -o /dev/null -L -w '%{http_code}' http://{{ hostvars[inventory_hostname].ansible_host }}:{{ grafana_config.grafana_port }}

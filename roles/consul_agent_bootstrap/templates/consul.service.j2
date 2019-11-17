@@ -10,12 +10,12 @@ Type=simple
 User=consul
 Group=consul
 ExecStart=/usr/local/bin/consul agent \
-        -join {{ consul_config.consul_join_ip }} \
+        -join {{ consul_agent_config.consul_join_ip }} \
 	-client {{ hostvars[inventory_hostname].ansible_host }} \
         -advertise {{ hostvars[inventory_hostname].ansible_host }} \
-        -log-file={{ consul_config.consul_log_dir }} \
-        -data-dir={{ consul_config.consul_data_dir }} \
-        -config-dir {{ consul_config.consul_config_dir }}
+        -log-file={{ consul_agent_config.consul_log_dir }} \
+        -data-dir={{ consul_agent_config.consul_data_dir }} \
+        -config-dir {{ consul_agent_config.consul_agent_config.dir }}
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
