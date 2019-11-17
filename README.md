@@ -17,6 +17,12 @@ export VER="2.14.0"
 wget https://github.com/prometheus/prometheus/releases/download/${VER}/prometheus-${VER}.linux-amd64.tar.gz -O roles/prometheus_upload/files/prometheus.tar.gz
 ```
 
+- Grafana
+```bash
+export VER="6.4.4"
+wget https://dl.grafana.com/oss/release/grafana-6.4.4-1.x86_64.rpm -O roles/grafana_rpm_upload/files/grafana-6.4.4-1.x86_64.rpm
+```
+
 Install consul:
 ```bash
 ansible-playbook -i megafarm.inventory consul_server_install.yml
