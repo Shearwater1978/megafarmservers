@@ -1,0 +1,24 @@
+##################### Grafana Configuration Example #####################
+#
+# Everything has defaults so you only need to uncomment things you want to
+# change
+#########################################################################
+[paths]
+# Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
+data = {{ grafana_config.grafana_data_dir }}
+
+# Temporary files in `data` directory older than given duration will be removed
+;temp_data_lifetime = 24h
+
+# Directory where grafana can store logs
+logs = {{ grafana_config.grafana_log_dir }}
+
+# Directory where grafana will automatically scan and look for plugins
+plugins = {{ grafana_config.grafana_plugin_dir }}
+
+# folder that contains provisioning config files that grafana will apply on startup and while running.
+provisioning = {{ grafana_config.grafana_provisioning_dir }}
+
+# The http port  to use
+http_port = {{ grafana_config.grafana_port }}
+

@@ -1,6 +1,6 @@
 {
     "server": false,
-    "datacenter": " {{ consul_config.consul_datacenter }}",
+    "datacenter": "{{ consul_config.consul_datacenter }}",
     "data_dir": "{{ consul_config.consul_data_dir }}",
     "encrypt": "{{ uuidtoken_env.uuidtoken }}",
     "log_level": "INFO",

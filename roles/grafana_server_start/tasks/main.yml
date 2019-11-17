@@ -1,0 +1,10 @@
+---
+- name: Daemon reload
+  systemd:
+    daemon_reexec: yes
+
+- name: Run grafana-server
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes

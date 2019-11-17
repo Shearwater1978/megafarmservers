@@ -1,0 +1,7 @@
+- hosts: "{{ grafanaserver }}"
+  become: yes
+  gather_facts: yes
+  roles:
+    - { role: grafana_rpm_upload, tags: ['grafanarpmupload','full'] }
+    - { role: grafana_ini_upload, tags: ['grafanainiupload','full'] }
+    - { role: grafana_server_start, tags: ['grafanaserverstart','full'] }

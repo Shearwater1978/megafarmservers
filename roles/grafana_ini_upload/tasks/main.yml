@@ -1,0 +1,12 @@
+---
+- name: Include var
+  include_vars:
+    file: grafana_config.env
+    name: grafana_config
+
+- name: Upload ini file to server
+  template:
+    src: "{{ item.name }}"
+    dest: "{{ item.tgt }}"
+  with_items:
+    - { name: 'grafana.ini.j2', tgt: '/etc/grafana/grafana.ini' }

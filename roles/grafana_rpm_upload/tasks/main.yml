@@ -1,0 +1,24 @@
+---
+- name: Create tmp dir for grafana
+  tempfile:
+    state: directory
+    suffix: grafana
+  register: tempdir
+
+- name: Upload grafana rpm to server
+  copy:
+    src: grafana-6.4.4-1.x86_64.rpm
+    dest: "{{ tempdir.path }}"
+
+- name: Grafana install from rpm
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ tempdir.path }}/grafana-6.4.4-1.x86_64.rpm"
+
+- name: Remove tmp dir
+  file:
+    state: absent
+    path: "{{ tempdir.path }}"
+  when: tempdir.path is defined
