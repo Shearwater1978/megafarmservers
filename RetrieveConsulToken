@@ -1,0 +1,7 @@
+1. You must know which of one consul nodes are master
+2. You must create file in %data_dir% named acl-bootstrap-reset
+3. You must put value, named "reset index" into acl-bootstrap-reset
+4. You must run command:
+```bash
+consul acl bootstrap
+```
