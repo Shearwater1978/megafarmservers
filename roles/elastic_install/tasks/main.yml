@@ -7,7 +7,7 @@
 
 - name: Copy elastic rpm into tmp dir
   copy:
-    src: elasticsearch-7.3.1-x86_64.rpm
+    src: elasticsearch.rpm
     dest: "{{ mktemp.path }}"
   register: copyout
 

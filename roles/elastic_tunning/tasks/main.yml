@@ -1,8 +1,8 @@
 ---
-- name: Include var
-  include_vars:
-    file: efk.env.yaml
-    name: ext_env
+#- name: Include var
+#  include_vars:
+#    file: efk.env.yaml
+#    name: ext_env
 
 - name: Create override conf
   file:
@@ -26,6 +26,7 @@
     - { line: "cluster.name: {{ elastic_cluster_name | default('elastic')}}", regexp: '^cluster.name:', after: '#cluster.name:'}
     - { line: "node.name: {{ elastic_node_name | default('elastic-11')}}", regexp: '^node.name:', after: '#node.name:'}
     - { line: "network.host: {{ hostvars[inventory_hostname].ansible_host }}", regexp: '^network.host:', after: '#network.host' }
+    - { line: "http.port: {{ elastic_port | default('9200') }}", regexp: '^http.port', after: '#http.port' }
     - { line: "cluster.initial_master_nodes: ['{{ hostvars[inventory_hostname].ansible_host }}']", regexp: '^cluster.initial_master_nodes:', after: '#cluster.initial_master_nodes:' }
   when: inventory_hostname == inventory_hostname
 

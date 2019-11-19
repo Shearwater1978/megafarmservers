@@ -5,4 +5,5 @@
     - { role: elastic_prepare, tags: ['eprepare','full'] }
     - { role: elastic_install, tags: ['einstall','full'] }
     - { role: elastic_tunning, tags: ['etunning','full'] }
+    - { role: elastic_firewalld, tags: ['efirewalld','full'] }
     - { role: elastic_check, tags: ['echeck','full'] }

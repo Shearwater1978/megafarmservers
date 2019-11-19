@@ -1,0 +1,9 @@
+---
+- name: Add rules for firewalld
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+  with_items:
+    - "{{ elastic_port | default('9200') }}/tcp"

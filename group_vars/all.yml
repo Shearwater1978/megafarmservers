@@ -1,0 +1,11 @@
+consul_join_ip: 172.0.0.40
+consul_log_dir: /var/lib/consul/log
+consul_data_dir: /var/lib/consul
+consul_config_dir: /etc/consul.d/client
+consul_datacenter: dc1
+kibana_server_port: 5601
+kibana_server_name: kibana
+kibana_elasticsearch_port: 9200
+elastic_cluster_name: elastic1
+elastic_node_name: elastic-node-1
+elastic_port: 9200
