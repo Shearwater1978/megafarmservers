@@ -1,0 +1,258 @@
+Vagrant.configure("2") do |config|
+
+	# aws t2.micro instance
+	$t2_micro_mem = 1024
+	$t2_micro_cpu = 1
+	# aws t2.nano instance
+	$t2_nano_mem = 512
+	$t2_nano_cpu = 1
+	# t2.small
+	$t2_small_mem = 2048
+	$t2_small_cpu = 2
+	
+	$k8s_master_ip = 10
+	$k8s_worker_begin_ip = 15
+	$elastic_stack_begin_ip_range = 20
+	$prometheus_ip = 25
+	$kibana_ip = 30
+	$nfs_ip = 35
+	$consul_begin_ip_range = 40
+	$grafana_ip = 45
+	$private_net = "172.0.0."
+
+	$vbox_img = "generic/centos7"
+
+	# Run nfs node
+	config.vm.define "nfs" do |nfs|
+	    nfs.vm.box = "#{$vbox_img}"
+	    nfs.vm.hostname = "nfs.my.home"
+	    nfs.vm.network :private_network, ip: "#{$private_net}#{$nfs_ip}"
+		nfs.vbguest.auto_update = false
+	    nfs.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_nano_mem}",
+	    		"--cpus", "#{$t2_nano_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		nfs.vm.provision "shell", path: "provision.sh"
+		nfs.vm.provision "shell", path: "provision nfssrv.sh"
+    end	
+
+	#Run Kubernetes master server
+    config.vm.define "k8smaster" do |master|
+	    master.vm.box = "#{$vbox_img}"
+	    master.vm.hostname = "k8smaster.my.home"
+	    master.vm.network :private_network, ip: "#{$private_net}#{$k8s_master_ip}"
+		master.vbguest.auto_update = false
+	    master.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		master.vm.provision "shell", path: "provision.sh"
+		master.vm.provision "shell", path: "provision nfsclnt.sh"
+    end
+
+	# Run Kubernetes worker node1
+	config.vm.define "k8sworker1" do |node|
+		node.vm.box = "#{$vbox_img}"
+		node.vm.hostname = "k8sworker1.my.home"
+		node.vm.network :private_network, ip: "#{$private_net}#{$k8s_worker_begin_ip}"
+		node.vbguest.auto_update = false
+		node.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		node.vm.provision "shell", path: "provision.sh"
+		node.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+	
+	# Run Kubernetes worker node2
+	config.vm.define "k8sworker2" do |node|
+		node.vm.box = "#{$vbox_img}"
+		node.vm.hostname = "k8sworker2.my.home"
+		node.vm.network :private_network, ip: "#{$private_net}#{$k8s_worker_begin_ip+1}"
+		node.vbguest.auto_update = false
+		node.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		node.vm.provision "shell", path: "provision.sh"
+		node.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+	
+	# Run Elastic node 1
+	config.vm.define "elastic1" do |elastic1|
+		elastic1.vm.box = "#{$vbox_img}"
+		elastic1.vm.hostname = "elastic1.my.home"
+		elastic1.vm.network :private_network, ip: "#{$private_net}#{$elastic_stack_begin_ip_range}"
+		elastic1.vbguest.auto_update = false
+		elastic1.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		elastic1.vm.provision "shell", path: "provision.sh"
+		elastic1.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+	
+	# Run Elastic node 2
+	config.vm.define "elastic2" do |elastic2|
+		elastic2.vm.box = "#{$vbox_img}"
+		elastic2.vm.hostname = "elastic1.my.home"
+		elastic2.vm.network :private_network, ip: "#{$private_net}#{$elastic_stack_begin_ip_range+1}"
+		elastic2.vbguest.auto_update = false
+		elastic2.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		elastic2.vm.provision "shell", path: "provision.sh"
+		elastic2.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+	
+	# Run Elastic node 3
+	config.vm.define "elastic3" do |elastic3|
+		elastic3.vm.box = "#{$vbox_img}"
+		elastic3.vm.hostname = "elastic1.my.home"
+		elastic3.vm.network :private_network, ip: "#{$private_net}#{$elastic_stack_begin_ip_range+2}"
+		elastic3.vbguest.auto_update = false
+		elastic3.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		elastic3.vm.provision "shell", path: "provision.sh"
+		elastic3.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+	
+	# Run Consul node 1
+	config.vm.define "consul1" do |consul1|
+		consul1.vm.box = "#{$vbox_img}"
+		consul1.vm.hostname = "consul1.my.home"
+		consul1.vm.network :private_network, ip: "#{$private_net}#{$consul_begin_ip_range}"
+		consul1.vbguest.auto_update = false
+		consul1.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		consul1.vm.provision "shell", path: "provision.sh"
+		consul1.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+
+	# Run Consul node 2
+	config.vm.define "consul2" do |consul2|
+		consul2.vm.box = "#{$vbox_img}"
+		consul2.vm.hostname = "consul2.my.home"
+		consul2.vm.network :private_network, ip: "#{$private_net}#{$consul_begin_ip_range+1}"
+		consul2.vbguest.auto_update = false
+		consul2.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		consul2.vm.provision "shell", path: "provision.sh"
+		consul2.vm.provision "shell", path: "provision nfsclnt.sh"
+	end
+	
+	# Run Consul node 3
+	config.vm.define "consul3" do |consul3|
+		consul3.vm.box = "#{$vbox_img}"
+		consul3.vm.hostname = "consul3.my.home"
+		consul3.vm.network :private_network, ip: "#{$private_net}#{$consul_begin_ip_range+2}"
+		consul3.vbguest.auto_update = false
+		consul3.vm.provider :virtualbox do |vb|
+			vb.customize [
+				"modifyvm", :id,
+				"--memory", "#{$t2_small_mem}",
+				"--cpus", "#{$t2_small_cpu}",
+				"--audio", "none",
+			]
+		end
+		consul3.vm.provision "shell", path: "provision.sh"
+		consul3.vm.provision "shell", path: "provision nfsclnt.sh"
+	end	
+	
+	# Run Kibana node
+	config.vm.define "kibana" do |kibana|
+	    kibana.vm.box = "#{$vbox_img}"
+	    kibana.vm.hostname = "kibana.my.home"
+	    kibana.vm.network :private_network, ip: "#{$private_net}#{$kibana_ip}"
+		kibana.vbguest.auto_update = false
+	    kibana.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		kibana.vm.provision "shell", path: "provision.sh"
+		kibana.vm.provision "shell", path: "provision nfsclnt.sh"
+    end
+
+	# Run Prometheus node
+	config.vm.define "prometheus" do |prometheus|
+	    prometheus.vm.box = "#{$vbox_img}"
+	    prometheus.vm.hostname = "prometheus.my.home"
+	    prometheus.vm.network :private_network, ip: "#{$private_net}#{$prometheus_ip}"
+		prometheus.vbguest.auto_update = false
+	    prometheus.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		prometheus.vm.provision "shell", path: "provision.sh"
+		prometheus.vm.provision "shell", path: "provision nfsclnt.sh"
+    end
+	
+	# Run Grafana node
+	config.vm.define "grafana" do |grafana|
+	    grafana.vm.box = "#{$vbox_img}"
+	    grafana.vm.hostname = "grafana.my.home"
+	    grafana.vm.network :private_network, ip: "#{$private_net}#{$grafana_ip}"
+		grafana.vbguest.auto_update = false
+	    grafana.vm.provider :virtualbox do |vb|
+	    	vb.customize [
+	    		"modifyvm", :id,
+	    		"--memory", "#{$t2_micro_mem}",
+	    		"--cpus", "#{$t2_micro_cpu}",
+	    		"--audio", "none",
+	    	]
+	    end
+		grafana.vm.provision "shell", path: "provision.sh"
+		grafana.vm.provision "shell", path: "provision nfsclnt.sh"
+    end
+end
