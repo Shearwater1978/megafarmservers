@@ -1,0 +1,29 @@
+---
+- name: Include var
+  include_vars:
+    file: efk.env.yaml.{{ hostvars[item]['env_type'] }}
+    name: ext_env
+  with_items: "{{ groups['efksrv'][0] }}"
+
+- name: Tune up kibana conf
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.after }}"
+    state: present
+  with_items:
+    - { line: 'server.port: {{ ext_env.kibana_server_port }}',  regexp: '^server.port:', after: '#server.port:' }
+    - { line: 'server.host: {{ ext_env.kibana_server_host }}', regexp: '^server.host:', after: '#server.host:'}
+    - { line: 'server.name: {{ ext_env.kibana_server_name }}', regexp: '^server.name:', after: '#server.name:'}
+    - { line: 'elasticsearch.hosts: ["http://{{ ext_env.kibana_elasticsearch_hosts }}:{{ ext_env.kibana_elasticsearch_port}}"]', regexp: '^elasticsearch.hosts:', after: '#elasticsearch.hosts:'}
+
+- name: Reload systemd
+  systemd:
+    daemon_reexec: yes
+
+- name: Reload kibana
+  service:
+    name: kibana 
+    enabled: True
+    state: restarted

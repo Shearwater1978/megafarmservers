@@ -1,0 +1,23 @@
+---
+- name: Create tmp dir for elastic rpm
+  tempfile:
+    state: directory
+    suffix: elastic
+  register: mktemp
+
+- name: Copy elastic rpm into tmp dir
+  copy:
+    src: elasticsearch-7.3.1-x86_64.rpm
+    dest: "{{ mktemp.path }}"
+  register: copyout
+
+- name: Install elastic
+  yum:
+    name: "{{ copyout.dest }}"
+  notify: 
+    - Elasticsearch start
+
+- name: Clean tmp dir
+  file:
+    state: absent
+    path: "{{ mktemp.path }}"

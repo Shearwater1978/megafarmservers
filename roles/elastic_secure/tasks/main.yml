@@ -1,0 +1,49 @@
+---
+- name: Load var for setting up secure
+  include_vars:
+    file: efk.env.yaml.{{ hostvars[item]['env_type'] }}
+    name: ext_env
+  with_items: "{{ groups['efksrv'][0] }}"
+
+- name: Shutdown Elasticsearch service
+  service:
+    name: elasticsearch
+    state: stopped
+
+- name: Add security string to elastic conf
+  lineinfile: 
+    dest: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^xpack.security.transport.ssl.enabled'
+    line: 'xpack.security.transport.ssl.enabled: true'
+    create: yes
+
+- name: Add security string to elastic conf
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^xpack.security.enabled:'
+    line: 'xpack.security.enabled: true'
+    create: yes
+
+- name: Add boostrap password
+  shell: |
+    echo "{{ ext_env.bootstrap_password }}" | /usr/share/elasticsearch/bin/elasticsearch-keystore add --stdin bootstrap.password
+
+- name: Run Elasticsearch service
+  service:
+    name: elasticsearch
+    state: restarted
+
+- name: Waiting when Elastic come back - 90 second
+  wait_for:
+    timeout: 90
+
+- name: Setting password for elastic - user
+  uri:
+    url: http://{{ext_env.elastic_network_host}}:{{ext_env.kibana_elasticsearch_port}}/_xpack/security/user/elastic/_password
+    method: POST
+    body_format: json
+    body: "{ \"password\":\"{{ext_env.elastic_password }}\" }"
+    status_code: 200
+    user: "elastic"
+    password: "{{ ext_env.bootstrap_password }}"
+    force_basic_auth: yes

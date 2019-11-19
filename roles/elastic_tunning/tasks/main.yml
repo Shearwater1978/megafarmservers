@@ -1,0 +1,39 @@
+---
+- name: Include var
+  include_vars:
+    file: efk.env.yaml
+    name: ext_env
+
+- name: Create override conf
+  file:
+    path: /usr/lib/systemd/system/elasticsearch.service.d
+    state: directory
+
+- name: Upload conf
+  copy:
+    src: override.conf
+    dest: /usr/lib/systemd/system/elasticsearch.service.d/
+
+- name:
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.after }}"
+    state: present
+  with_items:
+    - { line: 'bootstrap.memory_lock: true',  regexp: '^bootstrap.memory_lock', after: '#bootstrap.memory_lock' }
+    - { line: "cluster.name: {{ elastic_cluster_name | default('elastic')}}", regexp: '^cluster.name:', after: '#cluster.name:'}
+    - { line: "node.name: {{ elastic_node_name | default('elastic-11')}}", regexp: '^node.name:', after: '#node.name:'}
+    - { line: "network.host: {{ hostvars[inventory_hostname].ansible_host }}", regexp: '^network.host:', after: '#network.host' }
+    - { line: "cluster.initial_master_nodes: ['{{ hostvars[inventory_hostname].ansible_host }}']", regexp: '^cluster.initial_master_nodes:', after: '#cluster.initial_master_nodes:' }
+  when: inventory_hostname == inventory_hostname
+
+- name: Reload daemon
+  systemd:
+    daemon_reexec: yes
+
+- name: Restart Elastic
+  service:
+    name: elasticsearch
+    state: restarted

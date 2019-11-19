@@ -1,0 +1,32 @@
+---
+- name: Remove kibana
+  yum:
+    name: kibana
+    state: absent
+
+- name: Reload systemd
+  systemd:
+    daemon_reexec: yes
+
+- name: Remove the user kibana
+  user:
+    name: kibana
+    state: absent
+    remove: yes
+
+- name: Remove group kibana
+  group:
+    name: kibana
+    state: absent
+
+- name: Remove dirs
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/rc.d/init.d/kibana"
+    - "/etc/default/kibana"
+    - "/etc/systemd/system/kibana.service"
+    - "/etc/kibana"
+    - "/var/lib/kibana"
+    - "/usr/lib/firewalld/services/kibana.xml"

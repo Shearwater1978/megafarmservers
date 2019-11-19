@@ -1,0 +1,41 @@
+---
+- name: Load var for setting up secure
+  include_vars:
+    file: efk.env.yaml.{{ hostvars[item]['env_type'] }}
+    name: ext_env
+  with_items: "{{ groups['efksrv'][0] }}"
+
+- name: Add security string to kibana conf
+  lineinfile: 
+    dest: /etc/kibana/kibana.yml
+    regexp: '^elasticsearch.username: "kibana"'
+    line: 'elasticsearch.username: "kibana"'
+    create: yes
+
+- name: Add security string to elastic conf
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    regexp: '^elasticsearch.password:'
+    line: 'elasticsearch.password: "{{ ext_env.kibana_password }}"'
+    create: yes
+
+- name: Reload daemon
+  systemd:
+    daemon_reexec: yes
+
+- name: Run Kibana service
+  service:
+    name: kibana
+    state: restarted
+
+- name: Setting password for kibana - user
+  uri:
+    url: http://{{ext_env.elastic_network_host}}:{{ext_env.kibana_elasticsearch_port}}/_xpack/security/user/kibana/_password
+    method: POST
+    body_format: json
+    body: "{ \"password\":\"{{ext_env.kibana_password }}\" }"
+    status_code: 200
+    user: "elastic"
+    password: "{{ ext_env.elastic_password }}"
+    force_basic_auth: yes
+

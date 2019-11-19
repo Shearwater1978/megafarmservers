@@ -1,4 +1,4 @@
-- hosts: prometheus
+- hosts: "{{ target }}"
   become: yes
   gather_facts: yes
   roles:

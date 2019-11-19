@@ -1,0 +1,39 @@
+---
+- name: Remove elasticsearch
+  yum:
+    name: elasticsearch
+    state: absent
+
+- name: Reload systemd
+  systemd:
+    daemon_reexec: yes
+
+- name: Remove the user elasticsearch
+  user:
+    name: elasticsearch
+    state: absent
+    remove: yes
+
+- name: Remove group elasticsearch
+  group:
+    name: elasticsearch
+    state: absent
+
+- name: Remove dirs
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/run/elasticsearch"
+    - "/sys/fs/cgroup/systemd/system.slice/elasticsearch.service"
+    - "/etc/rc.d/init.d/elasticsearc"
+    - "/etc/systemd/system/multi-user.target.wants/elasticsearch.service"
+    - "/etc/sysconfig/elasticsearch"
+    - "/etc/elasticsearch"
+    - "/var/lib/elasticsearch"
+    - "/usr/lib/systemd/system/elasticsearch.service"
+    - "/usr/lib/tmpfiles.d/elasticsearch.conf"
+    - "/usr/lib/sysctl.d/elasticsearch.conf"
+    - "/usr/lib/firewalld/services/elasticsearch.xml"
+    - "/usr/share/grafana/public/app/plugins/datasource/elasticsearch"
+    - "/usr/share/elasticsearch"

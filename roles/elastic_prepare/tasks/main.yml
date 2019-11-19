@@ -1,0 +1,29 @@
+---
+- debug:
+    msg: 'Diable swap - https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html'
+
+- name: Disable swap
+  shell:
+    swapoff --all
+
+- name: Change vm.swappiness
+  sysctl:
+    name: "{{ item.sysctl_name }}"
+    value: "{{ item.sysctl_value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  with_items:
+    - { sysctl_name: 'vm.swappiness', sysctl_value: '1' }
+    - { sysctl_name: 'vm.max_map_count', sysctl_value: '262144' }
+
+- name: Add params in /etc/security/limits.conf
+  lineinfile:
+    dest: /etc/security/limits.conf
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - 'elasticsearch    nproc   4096'
+    - 'elasticsearch    nofile  65535'
+    - 'elasticsearch    soft    memlock unlimited'
+    - 'elasticsearch    hard    memlock unlimited'

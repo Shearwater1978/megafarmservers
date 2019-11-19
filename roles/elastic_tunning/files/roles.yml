@@ -1,0 +1,14 @@
+remoteAgent:
+  cluster:
+    - cluster:monitor/main
+  indices:
+    - names: '*'
+      privileges:
+        - read
+        - write
+        - create_index
+        - monitor
+        - write
+        - create_index
+  run_as:
+    - '*'

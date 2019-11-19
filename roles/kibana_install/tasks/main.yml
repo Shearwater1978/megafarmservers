@@ -1,0 +1,23 @@
+---
+- name: Create tmp dir for kibana rpm
+  tempfile:
+    state: directory
+    suffix: kibana
+  register: mktemp
+
+- name: Copy kibana rpm into tmp dir
+  copy:
+    src: kibana-7.3.1-x86_64.rpm
+    dest: "{{ mktemp.path }}"
+  register: copyout
+
+- name: Install kibana
+  yum:
+    name: "{{ copyout.dest }}"
+  notify:
+    - Kibana start
+
+- name: Clean tmp dir
+  file:
+    state: absent
+    path: "{{ mktemp.path }}"
