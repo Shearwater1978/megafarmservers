@@ -9,3 +9,8 @@ kibana_elasticsearch_port: 9200
 elastic_cluster_name: elastic1
 elastic_node_name: elastic-node-1
 elastic_port: 9200
+grafana_log_dir: /var/lib/grafana/log
+grafana_data_dir: /var/lib/grafana
+grafana_plugin_dir: /var/lib/grafana/plugins
+grafana_provisioning_dir: /etc/grafana/conf/provisioning
+grafana_port: 3000
