@@ -4,20 +4,9 @@ For example:
 export CONSUL_HTTP_TOKEN=<your_token_here>
 ```
 
-2. Create agent policy file (get policy body):
+2. Create agent policy file (you can see policy body in files consul-server-one-policy.hcl):
 ```bash
-cat consul-server-one-policy.hcl
-```
-```bash
-node "consul1" {
-  policy = "write"
-}
-node "consul2" {
-  policy = "write"
-}
-node "consul2" {
-  policy = "write"
-}
+vi consul-server-one-policy.hcl
 ```
 
 3. Send request to server:
