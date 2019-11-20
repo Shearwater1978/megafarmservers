@@ -1,15 +1,10 @@
 ---
-#- name: Upload consul.service to master node
-#  template:
-#    src: nodes-policy.hcl.j2
-#    dest: /tmp/nodes-policy.hcl
+- name: Get consul leader
+  uri:
+    url: http://127.0.0.1:8500/v1/status/leader
+    return_content: yes
+  register: this
+  delegate_to: "{{ groups['consul'][0] }}"
 
 - debug:
-    msg: "{{ 999999999999999999994 | random | to_uuid }}"
-  register: uuidtoken
-
-- name: Write uuidtoken
-  copy:
-    content: "uuidtoken: {{ uuidtoken.msg }}"
-    dest: uuidtoken
-  delegate_to: localhost
+    msg: "{{ this.json | regex_findall('\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b') }}"

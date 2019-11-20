@@ -1,5 +1,5 @@
 consul_join_ip: 172.0.0.40
-consul_log_dir: /var/lib/consul/log
+consul_log_dir: /var/lib/consul/log/consul.log
 consul_data_dir: /var/lib/consul
 consul_config_dir: /etc/consul.d/client
 consul_datacenter: dc1

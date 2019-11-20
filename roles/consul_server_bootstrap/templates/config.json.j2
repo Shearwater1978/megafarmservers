@@ -9,7 +9,7 @@
     },
     "acl_default_policy":"allow",
     "acl_down_policy":"allow",
-    "acl_master_token":"{{ hostvars[groups['consul'][0]].mastertoken }}",
+    "acl_master_token":"{{ hostvars[groups['consul'][0]].token }}",
     "data_dir": "/var/lib/consul",
     "domain": "consul",
     "enable_script_checks": true,

@@ -1,13 +1,15 @@
 ---
-- name: Include var
-  include_vars:
-    file: uuidtoken
-    name: uuidtoken_env
+- name: Get consul token
+  shell: consul keygen
+  register: consultoken
+  delegate_to: "{{ groups['consul'][0] }}"
 
-- name: Include var
-  include_vars:
-    file: consul_agent_config.env
-    name: consul_agent_config
+#- debug:
+#    msg: "{{ consultoken.stdout }}"
+
+- set_fact:
+    token: "{{ consultoken.stdout }}"
+#  when: inventory_hostname == groups['consul'][0]
 
 - name: Upload consul.service to master node
   template:

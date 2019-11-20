@@ -11,6 +11,8 @@
     dest: "{{ mktemp.path }}"
   register: copyout
 
+- meta: flush_handlers
+
 - name: Install elastic
   yum:
     name: "{{ copyout.dest }}"

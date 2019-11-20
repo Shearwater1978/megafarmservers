@@ -7,3 +7,5 @@
     - { role: consul_agent_bootstrap, tags: ['agentconsulbootstrap','full'] }
     - { role: consul_agent_firewalld, tags: ['agentconsulfirewalld','full'] }
     - { role: consul_agent_start, tags: ['agentconsulstart','full'] }
+    - { role: consul_agent_token, tags: ['agentconsultoken','full'] }
+    - { role: dummy, tags: ['dummy'] }

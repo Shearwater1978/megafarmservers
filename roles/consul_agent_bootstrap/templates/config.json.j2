@@ -1,12 +1,12 @@
 {
     "server": false,
-    "datacenter": "{{ consul_agent_config.consul_datacenter }}",
-    "data_dir": "{{ consul_agent_config.consul_data_dir }}",
-    "encrypt": "{{ uuidtoken_env.uuidtoken }}",
+    "datacenter": "{{ consul_datacenter }}",
+    "data_dir": "{{ consul_data_dir }}",
+    "encrypt": "{{ token }}",
     "log_level": "INFO",
     "enable_syslog": false,
     "leave_on_terminate": true,
     "start_join": [
-        "{{ consul_agent_config.consul_join_ip }}"
+        "{{ consul_join_ip }}"
     ]
 }

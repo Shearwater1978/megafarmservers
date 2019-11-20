@@ -2,7 +2,6 @@
   become: yes
   gather_facts: yes
   roles:
-#    - { role: dummy, tags: ['dummy'] }
     - { role: consul_server_upload, tags: ['consulupload','consul','full'] }
     - { role: consul_server_prepare, tags: ['consulprepare','consul','full'] }
     - { role: consul_server_hosts, tags: ['consulhosts','consul','full'] }
